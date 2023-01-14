@@ -3,4 +3,4 @@ __pycache__/
 .idea/
 config.py
 .pytest_cache/
-logs/*
+*.log

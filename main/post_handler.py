@@ -1,14 +1,18 @@
-import json
 import logging
 from json import JSONDecodeError
 
 from config import LOGGING_PATH
+from .utils import convert_tags_to_links, read_json, write_json
 
-# logging.basicConfig(
-#     filename=fr'{LOGGING_PATH}/post_handler.log',
-#     level=logging.INFO,
-#     format='%(asctime)s [%(levelname)s] %(message)s'
-# )
+post_handler_logger = logging.getLogger('main')
+post_handler_logger.setLevel(logging.INFO)
+post_file_handler = logging.FileHandler(fr'{LOGGING_PATH}/main.log')
+post_file_handler.setLevel(logging.INFO)
+file_handler_formatter = logging.Formatter(
+    '%(asctime)s [%(levelname)s] %(message)s'
+)
+post_file_handler.setFormatter(file_handler_formatter)
+post_handler_logger.addHandler(post_file_handler)
 
 
 class PostHandler:
@@ -36,11 +40,12 @@ class PostHandler:
         """
         posts = []
         try:
-            with open(self.posts_path, 'r', encoding='utf-8') as file:
-                posts = json.load(file)
+            posts = read_json(self.posts_path)
         except JSONDecodeError:
-            pass
-            # logging.info(f'Ошибка загрузки файла {file.name}')
+            post_handler_logger.info(
+                'ph****************************************************'
+            )
+            post_handler_logger.exception('JSONDecodeError')
         return posts
 
     def get_posts_by_user(self, user_name):
@@ -52,13 +57,10 @@ class PostHandler:
         posts = self.get_posts_all()
 
         user_posts = [
-            post
+            convert_tags_to_links(post)
             for post in posts
             if post['poster_name'].lower() == user_name.lower()
         ]
-
-        if not user_posts:
-            raise ValueError(f'Пользователь {user_name} отсутствует')
 
         return user_posts
 
@@ -68,12 +70,26 @@ class PostHandler:
         :return:    - ist of comments
         """
         try:
-            with open(self.comments_path, 'r', encoding='utf-8') as file:
-                comments = json.load(file)
+            comments = read_json(self.comments_path)
 
         except JSONDecodeError:
-            # logging.info(f'Ошибка загрузки файла {file.name}')
             comments = None
+            post_handler_logger.info(
+                'ph****************************************************'
+            )
+            post_handler_logger.exception('JSONDecodeError')
+        posts = self.get_posts_all()
+
+        post_ids = [
+            post['pk']
+            for post in posts
+        ]
+
+        if post_id not in post_ids:
+            raise ValueError(
+                f"По такому post_id={post_id} постов не "
+                f"обнаружено"
+            )
 
         return comments
 
@@ -92,10 +108,6 @@ class PostHandler:
             if comment['post_id'] == post_id
         ]
 
-        if not user_comments:
-            user_comments = []
-            raise ValueError(f'Отсутствует комментарий с post_id={post_id}')
-
         return user_comments
 
     def search_for_posts(self, query):
@@ -106,7 +118,7 @@ class PostHandler:
         """
         posts = self.get_posts_all()
         posts_found = [
-            post
+            convert_tags_to_links(post)
             for post in posts
             if query.lower() in post['content'].lower()
         ]
@@ -120,5 +132,29 @@ class PostHandler:
         :return:    - post by PK
         """
         posts = self.get_posts_all()
-        post_by_pk = [post for post in posts if post['pk'] == pk]
+        post_by_pk = [convert_tags_to_links(post) for post in posts if
+                      post['pk'] == pk]
+
         return post_by_pk[0]
+
+    def get_posts_with_tags(self, tag):
+        posts = self.get_posts_all()
+        posts_with_tags = []
+        hashtag = '#' + tag
+        for post in posts:
+            if hashtag in post["content"]:
+                posts_with_tags.append(convert_tags_to_links(post))
+        return posts_with_tags
+
+    def add_remove_bookmark(self, pk):
+        post = self.get_post_by_pk(pk)
+        bookmarks = read_json(self.bookmarks_path)
+        if post in bookmarks:
+            bookmarks.remove(post)
+        else:
+            bookmarks.append(post)
+
+        write_json(self.bookmarks_path, bookmarks)
+
+    def get_all_bookmarks(self):
+        return read_json(self.bookmarks_path)

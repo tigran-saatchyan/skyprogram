@@ -31,8 +31,8 @@ post_handler = PostHandler(
 @api_blueprint.route('/posts')
 def all_posts_request():
     """
-    Index page
-    :return:
+    API response for all posts request
+    :return: - all posts json
     """
     api_logger.info('api****************************************************')
     api_logger.info('Запрос на получение всех постов')
@@ -43,6 +43,11 @@ def all_posts_request():
 
 @api_blueprint.route('/posts/<int:post_pk>')
 def post_by_pk_request(post_pk):
+    """
+    API response for post by pk request
+    :param post_pk: - post pk
+    :return:        - posts by pk json
+    """
     api_logger.info('api****************************************************')
     api_logger.info(f'Запрос на полчение поста по post_pk={post_pk}')
     try:

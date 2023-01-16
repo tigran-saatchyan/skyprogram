@@ -1,20 +1,24 @@
-import pytest
-from main.post_handler import *
+import json
+
+from json import JSONDecodeError
+
+from main.post_handler import PostHandler
+
+post_handler = PostHandler(
+    '../data/posts.json',
+    '../data/comments.json',
+    '../data/bookmarks.json'
+
+)
+
+all_posts = post_handler.get_posts_all()
+all_comments = post_handler.get_comments_from_json()
 
 
 def test_get_posts_all():
     """
     Returns all posts
     """
-    post_handler = PostHandler(
-        'data/pots.json',
-        'data/comments.json',
-        'data/bookmarks.json'
-
-    )
-
-    all_posts = post_handler.get_posts_all()
-    all_comments = post_handler.get_comments_from_json()
 
     try:
         with open(post_handler.posts_path, 'r', encoding='utf-8') as file:

@@ -4,18 +4,11 @@ from json import JSONDecodeError
 from config import LOGGING_PATH
 from .utils import convert_tags_to_links, read_json, write_json
 
-post_handler_logger = logging.getLogger('main')
-post_handler_logger.setLevel(logging.INFO)
-post_file_handler = logging.FileHandler(fr'{LOGGING_PATH}/main.log')
-post_file_handler.setLevel(logging.INFO)
-file_handler_formatter = logging.Formatter(
-    '%(asctime)s [%(levelname)s] %(message)s'
-)
-post_file_handler.setFormatter(file_handler_formatter)
-post_handler_logger.addHandler(post_file_handler)
-
 
 class PostHandler:
+    """
+    Post Handling class - manages app operations with posts
+    """
 
     def __init__(self, posts_path, comments_path, bookmarks_path):
         """
@@ -28,6 +21,16 @@ class PostHandler:
         self.comments_path = comments_path
         self.bookmarks_path = bookmarks_path
 
+        post_handler_logger = logging.getLogger('main')
+        post_handler_logger.setLevel(logging.INFO)
+        post_file_handler = logging.FileHandler(fr'{LOGGING_PATH}/main.log')
+        post_file_handler.setLevel(logging.INFO)
+        file_handler_formatter = logging.Formatter(
+            '%(asctime)s [%(levelname)s] %(message)s'
+        )
+        post_file_handler.setFormatter(file_handler_formatter)
+        post_handler_logger.addHandler(post_file_handler)
+
     def __repr__(self):
         return f'posts_path={self.posts_path}, ' \
                f'comments_path={self.comments_path}, ' \
@@ -35,7 +38,7 @@ class PostHandler:
 
     def get_posts_all(self):
         """
-        Get all posts
+        Get all posts from posts.json
         :return:    - list of all posts
         """
         posts = []
@@ -112,7 +115,7 @@ class PostHandler:
 
     def search_for_posts(self, query):
         """
-        Searching for posts
+        Searching for posts by specified substr(query)
         :param query:   - query to search
         :return:        - posts list containing query in content
         """
@@ -138,6 +141,11 @@ class PostHandler:
         return post_by_pk[0]
 
     def get_posts_with_tags(self, tag):
+        """
+        Get posts with tags PK
+        :param tag: - tag to search in post content
+        :return:    - list of posts with tags
+        """
         posts = self.get_posts_all()
         posts_with_tags = []
         hashtag = '#' + tag
@@ -147,6 +155,12 @@ class PostHandler:
         return posts_with_tags
 
     def add_remove_bookmark(self, pk):
+        """
+        Adds post to bookmark if post is not in bookmarks and
+        removes post from bookmarks if post is in bookmarks,
+        updating bookmark.json
+        :param pk:  - primary key of post to be added / removed
+        """
         post = self.get_post_by_pk(pk)
         bookmarks = read_json(self.bookmarks_path)
         if post in bookmarks:
@@ -157,4 +171,8 @@ class PostHandler:
         write_json(self.bookmarks_path, bookmarks)
 
     def get_all_bookmarks(self):
+        """
+        Get all bookmarks from json
+        :return:
+        """
         return read_json(self.bookmarks_path)

@@ -24,8 +24,7 @@ post_handler = PostHandler(
 @main_blueprint.route('/')
 def main_page():
     """
-    Index page
-    :return:
+    Index page shows all posts
     """
     all_posts = post_handler.get_posts_all()
     all_bookmarks = post_handler.get_all_bookmarks()
@@ -52,6 +51,9 @@ def main_page():
 
 @main_blueprint.route('/post/<int:post_pk>')
 def post_page(post_pk):
+    """
+    Post page - shows specific post by pk
+    """
     post_by_pk_not_found = {
         "poster_name"  : 'FourHundredFour',
         "poster_avatar": "/main/static/img/no_ava.png",
@@ -109,8 +111,7 @@ def post_page(post_pk):
 @main_blueprint.route('/user/<username>')
 def user_feed_page(username):
     """
-    Index page
-    :return:
+    User feed page - shows all posts of user by username
     """
     user_posts = post_handler.get_posts_by_user(username)
 
@@ -143,6 +144,9 @@ def user_feed_page(username):
 
 @main_blueprint.route('/search', methods=['GET'])
 def search_page():
+    """
+    Search page - shows all posts found by specific query/substr
+    """
     query = request.args.get('query')
     found_posts = post_handler.search_for_posts(query)
     all_bookmarks = post_handler.get_all_bookmarks()
@@ -160,6 +164,9 @@ def search_page():
 
 @main_blueprint.route('/tag/<tag>')
 def tag_page(tag):
+    """
+    HashTag page - shows all posts found by specific HashTag
+    """
     posts_with_tags = post_handler.get_posts_with_tags(tag)
     all_bookmarks = post_handler.get_all_bookmarks()
     for post in posts_with_tags:
@@ -177,6 +184,9 @@ def tag_page(tag):
 
 @main_blueprint.route('/bookmarks')
 def bookmark_page():
+    """
+    Bookmark page - shows all posts added to Bookmarks
+    """
     all_bookmarks = post_handler.get_all_bookmarks()
     for post in all_bookmarks:
         post['active'] = 'active'
@@ -189,6 +199,9 @@ def bookmark_page():
 
 @main_blueprint.route('/bookmarks/add/<int:pk>')
 def add_bookmark_page(pk):
+    """
+    Add Bookmark view - activates add/remove function
+    """
     post_handler.add_remove_bookmark(pk)
 
     return redirect("/", code=302)
@@ -196,6 +209,9 @@ def add_bookmark_page(pk):
 
 @main_blueprint.route('/bookmarks/remove/<int:pk>')
 def remove_bookmark_page(pk):
+    """
+    Add Bookmark view - activates add/remove function
+    """
     post_handler.add_remove_bookmark(pk)
 
     return redirect("/", code=302)

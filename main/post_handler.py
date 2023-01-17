@@ -4,6 +4,16 @@ from json import JSONDecodeError
 from config import LOGGING_PATH
 from .utils import convert_tags_to_links, read_json, write_json
 
+post_handler_logger = logging.getLogger('main')
+post_handler_logger.setLevel(logging.INFO)
+post_file_handler = logging.FileHandler(fr'{LOGGING_PATH}/main.log')
+post_file_handler.setLevel(logging.INFO)
+file_handler_formatter = logging.Formatter(
+    '%(asctime)s [%(levelname)s] %(message)s'
+)
+post_file_handler.setFormatter(file_handler_formatter)
+post_handler_logger.addHandler(post_file_handler)
+
 
 class PostHandler:
     """
@@ -20,16 +30,6 @@ class PostHandler:
         self.posts_path = posts_path
         self.comments_path = comments_path
         self.bookmarks_path = bookmarks_path
-
-        post_handler_logger = logging.getLogger('main')
-        post_handler_logger.setLevel(logging.INFO)
-        post_file_handler = logging.FileHandler(fr'{LOGGING_PATH}/main.log')
-        post_file_handler.setLevel(logging.INFO)
-        file_handler_formatter = logging.Formatter(
-            '%(asctime)s [%(levelname)s] %(message)s'
-        )
-        post_file_handler.setFormatter(file_handler_formatter)
-        post_handler_logger.addHandler(post_file_handler)
 
     def __repr__(self):
         return f'posts_path={self.posts_path}, ' \

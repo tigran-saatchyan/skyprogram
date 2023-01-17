@@ -2,8 +2,8 @@ from flask import Blueprint, redirect, render_template, request
 
 from config import *
 from main.utils import set_suffix
-from .post_handler import PostHandler
-from .post_handler import post_handler_logger
+from .post_handler import PostHandler, post_handler_logger
+
 
 main_blueprint = Blueprint(
     'main_blueprint',
@@ -88,7 +88,9 @@ def post_page(post_pk):
         post_handler_logger.info(
             'main****************************************************'
         )
-        post_handler_logger.exception(f'post_pk={post_pk} не существует')
+        post_handler_logger.exception(
+            f'post_pk={post_pk} не существует'
+        )
     except ValueError as e:
         post = post_by_pk_not_found
         post_comments = no_comments

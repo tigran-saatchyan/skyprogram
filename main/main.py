@@ -4,7 +4,6 @@ from config import *
 from main.utils import set_suffix
 from .post_handler import PostHandler, post_handler_logger
 
-
 main_blueprint = Blueprint(
     'main_blueprint',
     __name__,

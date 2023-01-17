@@ -1,0 +1,24 @@
+2023-01-17 12:28:15,262 [INFO] main****************************************************
+2023-01-17 12:28:15,262 [ERROR] post_pk=20 не существует
+Traceback (most recent call last):
+  File "/home/tigranix/Desktop/PyPyPy/coursework2_source/main/main.py", line 78, in post_page
+    post = post_handler.get_post_by_pk(post_pk)
+  File "/home/tigranix/Desktop/PyPyPy/coursework2_source/main/post_handler.py", line 141, in get_post_by_pk
+    return post_by_pk[0]
+IndexError: list index out of range
+2023-01-17 12:29:20,875 [INFO] main****************************************************
+2023-01-17 12:29:20,875 [ERROR] post_pk=20 не существует
+Traceback (most recent call last):
+  File "/home/tigranix/Desktop/PyPyPy/coursework2_source/main/main.py", line 78, in post_page
+    post = post_handler.get_post_by_pk(post_pk)
+  File "/home/tigranix/Desktop/PyPyPy/coursework2_source/main/post_handler.py", line 141, in get_post_by_pk
+    return post_by_pk[0]
+IndexError: list index out of range
+2023-01-17 12:29:42,980 [INFO] main****************************************************
+2023-01-17 12:29:42,980 [ERROR] post_pk=10 не существует
+Traceback (most recent call last):
+  File "/home/tigranix/Desktop/PyPyPy/coursework2_source/main/main.py", line 78, in post_page
+    post = post_handler.get_post_by_pk(post_pk)
+  File "/home/tigranix/Desktop/PyPyPy/coursework2_source/main/post_handler.py", line 141, in get_post_by_pk
+    return post_by_pk[0]
+IndexError: list index out of range

@@ -1,25 +1,23 @@
 import json
-
 from json import JSONDecodeError
 
+from config import *
 from main.post_handler import PostHandler
 
 post_handler = PostHandler(
-    '../data/posts.json',
-    '../data/comments.json',
-    '../data/bookmarks.json'
-
+    POSTS_JSON_PATH,
+    COMMENTS_JSON_PATH,
+    BOOKMARK_JSON_PATH
 )
 
 all_posts = post_handler.get_posts_all()
-all_comments = post_handler.get_comments_from_json()
+all_comments = post_handler.get_comments_from_json(1)
 
 
 def test_get_posts_all():
     """
     Returns all posts
     """
-
     try:
         with open(post_handler.posts_path, 'r', encoding='utf-8') as file:
             posts = json.load(file)
@@ -75,4 +73,4 @@ def test_get_post_by_pk():
     """
     pk = 2
     post_by_pk = [post for post in all_posts if post['pk'] == pk]
-    assert post_handler.get_post_by_pk(pk) == post_by_pk
+    assert post_handler.get_post_by_pk(pk) == post_by_pk[0]
